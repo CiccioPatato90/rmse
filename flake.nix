@@ -53,13 +53,22 @@
 
               # build deps
               meson ninja pkg-config
+
+              # runtime deps
+              gdb cgdb
             ];
+
+            DEBUG_SRC_DIRS = batpkgs.batsim.DEBUG_SRC_DIRS ++ batprotopkgs.batprotocol-cpp.DEBUG_SRC_DIRS ++ intervalsetpkgs.intervalset.DEBUG_SRC_DIRS;
+            GDB_DIR_ARGS = batpkgs.batsim.GDB_DIR_ARGS ++ batprotopkgs.batprotocol-cpp.GDB_DIR_ARGS ++ intervalsetpkgs.intervalset.GDB_DIR_ARGS;
 
             hardeningDisable = [ "fortify" ];
             shellHook = ''
               echo '⚠️ DO NOT USE THIS SHELL FOR A REAL EXPERIMENT! ⚠️'
               echo 'This shell is meant to get started with batsim (batprotocol version)'
               echo 'All softwares have been compiled in debug mode, which is extremely slow'
+              echo
+              echo 'Add the following arguments to GDB to explore sources of the Batsim ecosystem freely.'
+              echo gdb \$\{GDB_DIR_ARGS\}
             '';
           };
         };
