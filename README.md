@@ -10,7 +10,7 @@ git clone https://gitlab.com/mpoquet-courses/sched-with-batsim.git
 
 ## Software environment
 This section describes how to get into an environment where all the software is available for you to use.
-Three methods to get into such an environment are listed below, in order of preference.
+Two methods to get into such an environment are listed below, in order of preference.
 
 You can use the following commands to check if all the required softwares are available or not.
 
@@ -24,7 +24,7 @@ cgdb --version
 ```
 
 ### Method 1: Nix
-Nix a generic purpose package manager that tries as hard as possible to make build reproducible.
+Nix a generic purpose package manager that tries as hard as possible to make builds reproducible.
 Nix is strongly recommended for any scientific usage, since it not only produces reproducible binaries, but also allows good traceability of an experiment.
 
 Steps to get into a Batsim environment.
@@ -33,26 +33,21 @@ Steps to get into a Batsim environment.
   - If you have no installation privileges, try `nix-portable` instead: https://github.com/DavHau/nix-portable
 2. Enable Nix flakes. This is done by modifying a configuration file (or creating it first if needed).
    Up-to-date information is there, probably on the "Other Distros, without Home-Manager" section: https://nixos.wiki/wiki/Flakes
-3. Optional but recommended: Enable our binary cache to avoid the compilation of packages that are long to build.
-   TODO
+3. Optional but recommended: Run this command to use [our binary cache](https://app.cachix.org/cache/capack) instead of compiling software on your local machine:
+   `nix develop --extra-substituters 'https://capack.cachix.org' --extra-trusted-public-keys 'capack.cachix.org-1:38D+QFk3JXvMYJuhSaZ+3Nm/Qh+bZJdCrdu4pkIh5BU='`
 4. Run this command to enter a new shell from which you should be able to run all softwares: `nix develop`
 
-### Method 2: Docker
-Alternatively, a Docker container is provided.
 
-1. Install Docker if needed. This should be easy in any decent Linux distro.
-2. Run this command to enter a new (virtualized) shell from which you should be able to run all softwares: TODO
-
-### Method 3: Build it yourself
+### Method 2: Build it yourself
 Feeling extra adventurous? You can build everything yourself. This is not really documented but here some guidelines.
 
 - You should be able to get these from the package manager of any decent Linux distro: a C++ compilation toolchain, [Meson](https://mesonbuild.com/), [Ninja](https://ninja-build.org/), [pkg-config](https://en.wikipedia.org/wiki/Pkg-config), [Boost](https://en.wikipedia.org/wiki/Boost_(C%2B%2B_libraries)) and [nlohmann_json](https://github.com/nlohmann/json).
-- Either get SimGrid from your Linux distro package manager if available, or build it from source then install it.
+- Either get SimGrid from your Linux distro package manager if available, or build it from [source](https://framagit.org/simgrid/simgrid) then install it.
   SimGrid is usually built using [CMake](https://en.wikipedia.org/wiki/CMake).
   As I write these lines, Batsim should work with SimGrid 3.36.0.
 - Build and install [intervalset](https://framagit.org/batsim/intervalset) from source.
 - Build and install [batprotocol-cpp](https://framagit.org/batsim/batprotocol) from source.
-- Build and install [batsim][https://framagit.org/batsim/batsim] from source. Use the `batprotocol` branch. Batsim may require more dependencies, install these when Meson yells at you because it cannot find them.
+- Build and install [batsim](https://framagit.org/batsim/batsim) from source. Use the `batprotocol` branch. Batsim may require more dependencies, install these when Meson yells at you because it cannot find them.
 
 ## Run your first simulation
 Yay, most programs and libraries should now be available!
@@ -68,7 +63,7 @@ meson setup build
 ninja -C buid
 ```
 
-Your build directory should now contain a `.so` file for the `exec1by1` scheduling algorithm.
+Your build directory should now contain a `.so` file for the `exec1by1` scheduling algorithm.  
 You can list them by running `ls -l build/*.so`
 
 You can now run Batsim, which usually requires three main inputs.
@@ -87,7 +82,7 @@ batsim -l ./build/libexec1by1.so 0 '' -p assets/1machine.xml -w assets/2jobs.jso
 
 ## A glimpse at the simulation result
 By default, Batsim writes output files into an `out` directory in your current directory.
-Where to write output files can be customized with Batsim's `-e` command-line option.
+Where to write output files can be customized with Batsim's `-e` command-line option.  
 You can run Batsim with the `--help` option for details, and to list the available options.
 
 Batsim should have generated two output files.
@@ -100,7 +95,7 @@ Batsim should have generated two output files.
   Some fields give you information about the job execution (`starting_time`, `finish_time`, `allocated_resources`).
 
 Have a look at the `jobs.csv` file.
-Using a tool that can nicely print CSV files is recommended, such as [bat](https://github.com/sharkdp/bat) for terminal use, [R](https://en.wikipedia.org/wiki/R_(programming_language) or [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) for data analysis use, or alternatively any interactive spreadsheet software.
+Using a tool that can nicely print CSV files is recommended, such as [bat](https://github.com/sharkdp/bat) for terminal use, [R](https://en.wikipedia.org/wiki/R_(programming_language)) or [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) for data analysis use, or alternatively any interactive spreadsheet software.
 
 
 ## Run your first simulation in a debugger
@@ -124,7 +119,7 @@ This is typically with breakpoints, conditional breakpoints or watchpoints.
 
 ## Analyze and visualize simulation results
 In most real scenarios, you need to compute some analysis on Batsim outputs.
-Here you don't... but you'll soon need to do it so let us do something simple first 😜.
+Here you don't... but you'll soon need to do it, so let us do something simple first 😜.
 
 Create a program in your favorite data analysis programming language (R, Julia, Python...) to do the following.
 - Read the `jobs.csv` file output from Batsim.
