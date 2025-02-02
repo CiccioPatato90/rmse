@@ -6,12 +6,10 @@ project('sched_with_batsim', 'cpp',
 )
 
 batprotocol_cpp_dep = dependency('batprotocol-cpp')
-boost_dep = dependency('boost')
 intervalset_dep = dependency('intervalset')
 nlohmann_json_dep = dependency('nlohmann_json')
 deps = [
   batprotocol_cpp_dep
-, boost_dep
 , intervalset_dep
 , nlohmann_json_dep
 ]
