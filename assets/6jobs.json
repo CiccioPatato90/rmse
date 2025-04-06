@@ -1,0 +1,91 @@
+{
+    "description": "2jobs",
+    "nb_res": 1,
+    "jobs": [
+        {
+            "id": "1",
+            "profile": "50UT",
+            "res": 1,
+            "walltime": 50,
+            "subtime": 0
+        },
+        {
+            "id": "2",
+            "profile": "1UT",
+            "res": 1,
+            "walltime": 1,
+            "subtime": 0
+        },
+        {
+            "id": "3",
+            "profile": "50UT",
+            "res": 1,
+            "walltime": 50,
+            "subtime": 0
+        },
+        {
+            "id": "4",
+            "profile": "1UT",
+            "res": 1,
+            "walltime": 1,
+            "subtime": 0
+        },
+        {
+            "id": "5",
+            "profile": "2UT",
+            "res": 2,
+            "walltime": 2,
+            "subtime": 0
+        },
+        {
+            "id": "6",
+            "profile": "2UT",
+            "res": 2,
+            "walltime": 2,
+            "subtime": 0
+        },
+        {
+            "id": "7",
+            "profile": "2UT",
+            "res": 2,
+            "walltime": 2,
+            "subtime": 0
+        },
+        {
+            "id": "8",
+            "profile": "2UT",
+            "res": 2,
+            "walltime": 2,
+            "subtime": 0
+        },
+        {
+            "id": "9",
+            "profile": "2UT",
+            "res": 2,
+            "walltime": 2,
+            "subtime": 0
+        }
+    ],
+    "profiles": {
+        "50UT": {
+            "delay": 50,
+            "type": "delay"
+        },
+        "1UT": {
+            "delay": 1,
+            "type": "delay"
+        },
+        "2UT": {
+            "delay": 2,
+            "type": "delay"
+        },
+        "3UT": {
+            "delay": 3,
+            "type": "delay"
+        },
+        "4UT": {
+            "delay": 4,
+            "type": "delay"
+        }        
+    }
+}

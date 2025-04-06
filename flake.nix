@@ -59,6 +59,9 @@
               # program deps
               batpkgs.batsim
 
+              python3
+              kapack.evalys
+
               # libraries deps
               batprotopkgs.batprotocol-cpp
               intervalsetpkgs.intervalset

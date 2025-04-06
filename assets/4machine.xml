@@ -5,6 +5,9 @@
 
 <zone id="one_machine" routing="Full">
     <host id="node_0" speed="10Gf"/>
+    <host id="node_1" speed="10Gf"/>
+    <host id="node_2" speed="10Gf"/>
+    <host id="node_3" speed="10Gf"/>
     <host id="master_host" speed="100Mf"/>
 </zone>
 </platform>

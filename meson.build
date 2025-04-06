@@ -20,3 +20,28 @@ exec1by1 = shared_library('exec1by1', common + ['src/exec1by1.cpp'],
   dependencies: deps,
   install: true,
 )
+
+fcfs = shared_library('fcfs', common + ['src/fcfs.cpp'],
+  dependencies: deps,
+  install: true,
+)
+
+easy_backfill = shared_library('easy_backfill', common + ['src/easy_backfill.cpp'],
+  dependencies: deps,
+  install: true,
+)
+
+basic = shared_library('basic', common + ['src/basic.cpp'],
+  dependencies: deps,
+  install: true,
+)
+
+best_cont = shared_library('best_cont', common + ['src/best_cont.cpp'],
+  dependencies: deps,
+  install: true,
+)
+
+force_cont = shared_library('force_cont', common + ['src/force_cont.cpp'],
+  dependencies: deps,
+  install: true,
+)
