@@ -55,4 +55,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# Run analyze_scheduler_performance.py with the provided parameter
+echo "Running analyze_scheduler_performance.py with parameter: $PARAM"
+python3 ./scripts/analyze_scheduler_performance.py "$PARAM"
+if [ $? -ne 0 ]; then
+  echo "Analyze_scheduler_performance.py failed, exiting"
+  exit 1
+fi
+
 echo "All operations completed successfully" 

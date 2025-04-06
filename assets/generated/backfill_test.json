@@ -1,0 +1,118 @@
+{
+  "description": "Workload to test EASY backfilling vs FCFS with different walltime values",
+  "nb_res": 64,
+  "jobs": [
+    {
+      "id": "job1",
+      "profile": "delay1",
+      "res": 32,
+      "walltime": 110,
+      "subtime": 0
+    },
+    {
+      "id": "job2",
+      "profile": "delay2",
+      "res": 16,
+      "walltime": 120,
+      "subtime": 10
+    },
+    {
+      "id": "job3",
+      "profile": "delay3",
+      "res": 8,
+      "walltime": 130,
+      "subtime": 20
+    },
+    {
+      "id": "job4",
+      "profile": "delay4",
+      "res": 4,
+      "walltime": 140,
+      "subtime": 30
+    },
+    {
+      "id": "job5",
+      "profile": "delay5",
+      "res": 2,
+      "walltime": 150,
+      "subtime": 40
+    },
+    {
+      "id": "job6",
+      "profile": "delay6",
+      "res": 1,
+      "walltime": 160,
+      "subtime": 50
+    },
+    {
+      "id": "job7",
+      "profile": "delay7",
+      "res": 3,
+      "walltime": 170,
+      "subtime": 60
+    },
+    {
+      "id": "job8",
+      "profile": "delay8",
+      "res": 5,
+      "walltime": 180,
+      "subtime": 70
+    },
+    {
+      "id": "job9",
+      "profile": "delay9",
+      "res": 7,
+      "walltime": 190,
+      "subtime": 80
+    },
+    {
+      "id": "job10",
+      "profile": "delay10",
+      "res": 9,
+      "walltime": 200,
+      "subtime": 90
+    }
+  ],
+  "profiles": {
+    "delay1": {
+      "type": "delay",
+      "delay": 100
+    },
+    "delay2": {
+      "type": "delay",
+      "delay": 110
+    },
+    "delay3": {
+      "type": "delay",
+      "delay": 120
+    },
+    "delay4": {
+      "type": "delay",
+      "delay": 130
+    },
+    "delay5": {
+      "type": "delay",
+      "delay": 140
+    },
+    "delay6": {
+      "type": "delay",
+      "delay": 150
+    },
+    "delay7": {
+      "type": "delay",
+      "delay": 160
+    },
+    "delay8": {
+      "type": "delay",
+      "delay": 170
+    },
+    "delay9": {
+      "type": "delay",
+      "delay": 180
+    },
+    "delay10": {
+      "type": "delay",
+      "delay": 190
+    }
+  }
+} 

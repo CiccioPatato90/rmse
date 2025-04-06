@@ -13,10 +13,9 @@ if len(sys.argv) < 2:
 algorithm_name = sys.argv[1]
 
 # Define input and output paths
-#input_csv = f"./out/{algorithm_name}_jobs.csv"
 input_csv = "./out/jobs.csv"
-output_dir = "./res"
-output_file = f"{output_dir}/{algorithm_name}_gantt.png"
+output_dir = f"./res/{algorithm_name}"
+output_file = f"{output_dir}/gantt.png"
 
 # Check if input file exists
 if not os.path.exists(input_csv):
