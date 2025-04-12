@@ -38,6 +38,7 @@ static uint32_t backfill_success_count = 0;
 static uint32_t contiguous_backfill_count = 0;
 static uint32_t non_contiguous_backfill_count = 0;
 
+
 // -------------------------
 // Initialization function
 // -------------------------
@@ -53,6 +54,15 @@ extern "C" uint8_t batsim_edc_init(const uint8_t *data, uint32_t size, uint32_t 
     
     mb = new MessageBuilder(!format_binary);
     jobs = new std::list<SchedJob*>();
+
+    log_file.open("best_cont_log.txt", std::ios::out | std::ios::trunc);
+    if (!log_file.is_open()) {
+        printf("Warning: Could not open log file for writing\n");
+    } else {
+        log_file << "EASY Backfilling Scheduler Log\n";
+        log_file << "=============================\n\n";
+    }
+    
     
     
     return 0;
@@ -81,8 +91,45 @@ extern "C" uint8_t batsim_edc_deinit() {
     job_allocations.clear();
     available_res.clear();
 
+    // Close log file
+ 
+
+    if (log_file.is_open()) {
+ 
+
+        log_file.close();
+ 
+
+    }
+
     
     return 0;
+}
+
+void log_message(const char* format, ...) {
+
+    char buffer[1024];
+
+    va_list args;
+ 
+    va_start(args, format);
+ 
+    vsnprintf(buffer, sizeof(buffer), format, args);
+ 
+    va_end(args);
+
+    // Print to console
+
+    printf("%s", buffer);
+
+    // Write to log file if open
+
+    if (log_file.is_open()) {
+
+        log_file << buffer;
+
+        log_file.flush();  // Ensure it's written immediately
+    }
 }
 
 // Helper function to ensure available_res has enough time slots
@@ -199,9 +246,6 @@ extern "C" uint8_t batsim_edc_take_decisions(
     // Scheduling loop with backfilling
     // -------------------------
     size_t time_index = static_cast<size_t>(current_time);
-    
-    // Print queue state
-    int queue_position = 0;
  
     
     while (!jobs->empty()) {

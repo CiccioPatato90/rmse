@@ -4,7 +4,38 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import sys
+import re
 from pathlib import Path
+
+def extract_backfill_stats(log_file):
+    """
+    Extract the final backfill statistics from a log file.
+    
+    Args:
+        log_file: Path to the log file
+    
+    Returns:
+        tuple: (total_backfills, contiguous_backfills, basic_backfills) or None if not found
+    """
+    if not os.path.exists(log_file):
+        return None
+    
+    # Read the last line of the file that contains backfill statistics
+    with open(log_file, 'r') as f:
+        lines = f.readlines()
+    
+    # Find the last line with backfill statistics
+    for line in reversed(lines):
+        if "Backfilling statistics:" in line:
+            # Extract numbers using regex
+            match = re.search(r"Backfilling statistics: (\d+) total successes \((\d+) contiguous, (\d+) non-contiguous\)", line)
+            if match:
+                total = int(match.group(1))
+                contiguous = int(match.group(2))
+                non_contiguous = int(match.group(3))
+                return total, contiguous, non_contiguous
+    
+    return None
 
 def analyze_scheduler_performance(algorithm_name, output_dir=None):
     """
@@ -17,6 +48,7 @@ def analyze_scheduler_performance(algorithm_name, output_dir=None):
     # Define input paths
     input_jobs_csv = "./out/jobs.csv"
     input_schedule_csv = "./out/schedule.csv"
+    log_file = f"./out/{algorithm_name}_log.txt"
     
     # Set default output directory if not provided
     if output_dir is None:
@@ -40,6 +72,13 @@ def analyze_scheduler_performance(algorithm_name, output_dir=None):
     jobs_df = pd.read_csv(input_jobs_csv)
     schedule_df = pd.read_csv(input_schedule_csv)
     
+    # Extract backfill statistics from log file
+    backfill_stats = extract_backfill_stats(log_file)
+    if backfill_stats:
+        total_backfills, contiguous_backfills, basic_backfills = backfill_stats
+    else:
+        total_backfills, contiguous_backfills, basic_backfills = 0, 0, 0
+    
     # Extract basic statistics
     total_jobs = len(jobs_df)
     makespan = schedule_df['makespan'].iloc[0]
@@ -56,6 +95,10 @@ def analyze_scheduler_performance(algorithm_name, output_dir=None):
     print(f"Mean Turnaround Time: {mean_turnaround_time:.2f} seconds")
     print(f"Mean Slowdown: {mean_slowdown:.2f}")
     print(f"Max Slowdown: {max_slowdown:.2f}")
+    print(f"\nBackfill Statistics:")
+    print(f"Total Backfills: {total_backfills}")
+    print(f"Contiguous Backfills: {contiguous_backfills}")
+    print(f"Basic Backfills: {basic_backfills}")
     
     # Resource utilization
     total_computing_time = schedule_df['time_computing'].iloc[0]
@@ -110,6 +153,10 @@ def analyze_scheduler_performance(algorithm_name, output_dir=None):
         f.write(f"Mean Turnaround Time: {mean_turnaround_time:.2f} seconds\n")
         f.write(f"Mean Slowdown: {mean_slowdown:.2f}\n")
         f.write(f"Max Slowdown: {max_slowdown:.2f}\n")
+        f.write(f"\nBackfill Statistics:\n")
+        f.write(f"Total Backfills: {total_backfills}\n")
+        f.write(f"Contiguous Backfills: {contiguous_backfills}\n")
+        f.write(f"Basic Backfills: {basic_backfills}\n")
         f.write(f"\nResource Utilization: {utilization:.2f}%\n")
         f.write("\n=== JOB CHARACTERISTICS ===\n")
         f.write(f"Average Resources per Job: {jobs_df['requested_number_of_resources'].mean():.2f}\n")

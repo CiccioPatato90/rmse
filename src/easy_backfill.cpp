@@ -32,6 +32,10 @@ static std::unordered_map<std::string, SchedJob*> running_jobs;
 static std::unordered_map<std::string, std::set<uint32_t>> job_allocations;
 static uint32_t platform_nb_hosts = 0;
 static std::set<uint32_t> available_res;
+static uint32_t backfill_success_count = 0;
+static uint32_t contiguous_backfill_count = 0;
+static uint32_t non_contiguous_backfill_count = 0;
+static std::ofstream log_file;
 
 // -------------------------
 // Initialization function
@@ -48,6 +52,14 @@ extern "C" uint8_t batsim_edc_init(const uint8_t *data, uint32_t size, uint32_t 
     
     mb = new MessageBuilder(!format_binary);
     jobs = new std::list<SchedJob*>();
+
+    log_file.open("easy_backfill_log.txt", std::ios::out | std::ios::trunc);
+    if (!log_file.is_open()) {
+        printf("Warning: Could not open log file for writing\n");
+    } else {
+        log_file << "EASY Backfilling Scheduler Log\n";
+        log_file << "=============================\n\n";
+    }
     
     
     return 0;
@@ -75,8 +87,44 @@ extern "C" uint8_t batsim_edc_deinit() {
     running_jobs.clear();
     job_allocations.clear();
     available_res.clear();
+
+    // Close log file
+ 
+
+    if (log_file.is_open()) {
+ 
+
+        log_file.close();
+ 
+
+    }
     
     return 0;
+}
+void log_message(const char* format, ...) {
+
+    char buffer[1024];
+
+    va_list args;
+ 
+    va_start(args, format);
+ 
+    vsnprintf(buffer, sizeof(buffer), format, args);
+ 
+    va_end(args);
+
+    // Print to console
+
+    printf("%s", buffer);
+
+    // Write to log file if open
+
+    if (log_file.is_open()) {
+
+        log_file << buffer;
+
+        log_file.flush();  // Ensure it's written immediately
+    }
 }
 
 // -------------------------
@@ -182,11 +230,10 @@ extern "C" uint8_t batsim_edc_take_decisions(
             // The front job does not fit: attempt to backfill one job from the rest of the queue.
             bool backfilled = false;
             // Start from the second job (if any).
-            for (auto it = std::next(jobs->begin()); it != jobs->end(); ++it) {
-                SchedJob* backfill_job = *it;
+            for (auto job_it = std::next(jobs->begin()); job_it != jobs->end(); ++job_it) {
+                SchedJob* backfill_job = *job_it;
                 
                 if (available_res.size() >= backfill_job->nb_hosts) {
-                    
                     std::set<uint32_t> job_resources;
                     auto res_it = available_res.begin();
                     for (uint8_t i = 0; i < backfill_job->nb_hosts; ++i, ++res_it) {
@@ -207,8 +254,29 @@ extern "C" uint8_t batsim_edc_take_decisions(
                     mb->add_execute_job(backfill_job->job_id, resources_str);
                     
                     // Remove the backfilled job from the pending queue.
-                    jobs->erase(it);
+                    jobs->erase(job_it);
                     backfilled = true;
+                    backfill_success_count++;
+                    
+                    // Check if the allocated resources are contiguous
+                    bool is_contiguous = true;
+                    auto it_res = job_resources.begin();
+                    auto next = std::next(it_res);
+                    while (next != job_resources.end()) {
+                        if (*next - *it_res != 1) {
+                            is_contiguous = false;
+                            break;
+                        }
+                        ++it_res;
+                        ++next;
+                    }
+                    
+                    if (is_contiguous) {
+                        contiguous_backfill_count++;
+                    } else {
+                        non_contiguous_backfill_count++;
+                    }
+                    
                     break; // Schedule at most one backfilled job in this decision cycle.
                 }
             }
@@ -221,6 +289,9 @@ extern "C" uint8_t batsim_edc_take_decisions(
             }
         }
     }
+    
+    log_message("Backfilling statistics: %u total successes (%u contiguous, %u non-contiguous)\n", 
+           backfill_success_count, contiguous_backfill_count, non_contiguous_backfill_count);
     
     mb->finish_message(parsed->now());
     serialize_message(*mb, !format_binary, const_cast<const uint8_t **>(decisions), decisions_size);
