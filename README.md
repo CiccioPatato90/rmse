@@ -1,13 +1,15 @@
 # BATSIM Project - M1 CSA 2024/2025
 
 ## Overview
-This project implements various backfilling algorithms for job scheduling in BATSIM, inspired by Fernando Mendonça's PhD manuscript (Chapters 4 and 5).
+This project implements various backfilling algorithms for job scheduling in BATSIM, inspired by Fernando Mendonça's PhD manuscript (Chapters 4 and 5). The project provides a framework for comparing different scheduling strategies and analyzing their performance.
 
 ## Implemented Algorithms
-Located in the `/src` directory, the project implements three scheduling algorithms:
+Located in the `/src` directory, the project implements the following scheduling algorithms:
 
 1. **Basic Backfilling (Conservative Backfilling)**
    - Standard implementation of conservative backfilling strategy
+   - Prioritizes jobs in FIFO order
+   - Allows smaller jobs to backfill if they don't delay the first job
 
 2. **Best Effort Contiguous Backfilling**
    - Attempts to assign contiguous resources to tasks
@@ -17,6 +19,17 @@ Located in the `/src` directory, the project implements three scheduling algorit
 3. **Force Contiguous Backfilling**
    - Enforces contiguous resource allocation for all tasks
    - More strict version of contiguous backfilling
+   - Rejects jobs if contiguous allocation is not possible
+
+4. **First-Come-First-Served (FCFS)**
+   - Simple non-backfilling scheduler
+   - Executes jobs in strict submission order
+   - No preemption or backfilling
+
+5. **Execute-One-by-One**
+   - Executes exactly one job at a time
+   - Waits for the current job to complete before starting the next
+   - Simplest possible scheduling strategy
 
 ## Usage
 
@@ -80,6 +93,38 @@ Each output directory contains:
 4. **Gantt Chart** (`gantt.png`)
    - Visual representation of the schedule
    - Generated using Evalys
+
+## Performance Metrics
+
+The scheduler performance analysis script (`scripts/analyze_scheduler_performance.py`) generates comprehensive metrics for each algorithm:
+
+### Backfill Statistics
+- **Total Backfills**: The total number of backfills performed by the scheduler
+- **Contiguous Backfills**: The number of backfills where the allocated resources are contiguous
+- **Basic Backfills**: The number of backfills where the allocated resources are non-contiguous
+
+### Resource Utilization
+- **Average Resource Utilization**: Percentage of resources used over time
+- **Peak Resource Utilization**: Maximum percentage of resources used at any point
+
+### Job Metrics
+- **Average Waiting Time**: Mean time jobs spend in the queue
+- **Median Waiting Time**: Median time jobs spend in the queue
+- **Maximum Waiting Time**: Longest time a job spent in the queue
+- **Average Response Time**: Mean time from submission to completion
+- **Job Completion Rate**: Percentage of submitted jobs that complete successfully
+
+### Algorithm-Specific Metrics
+- **Contiguity Rate**: Percentage of jobs allocated contiguous resources (for contiguous algorithms)
+- **Rejection Rate**: Percentage of jobs rejected due to resource constraints
+
+These metrics are stored in the root directory with the algorithm name, for example:
+- `basic_backfill_stats.txt`
+- `easy_backfill_stats.txt`
+- `fcfs_stats.txt`
+- `exec1by1_stats.txt`
+
+The backfill statistics are also logged during the simulation and can be found in the console output and in the performance summary text file.
 
 ## Author
 Francesco Pace Napoleone
