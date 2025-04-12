@@ -54,14 +54,6 @@ extern "C" uint8_t batsim_edc_init(const uint8_t *data, uint32_t size, uint32_t 
     mb = new MessageBuilder(!format_binary);
     jobs = new std::list<SchedJob*>();
     
-    // Open log file
-    log_file.open("best_cont_log.txt", std::ios::out | std::ios::trunc);
-    if (!log_file.is_open()) {
-        printf("Warning: Could not open log file for writing\n");
-    } else {
-        log_file << "Conservative Backfilling Scheduler Log\n";
-        log_file << "===================================\n\n";
-    }
     
     return 0;
 }
@@ -88,31 +80,9 @@ extern "C" uint8_t batsim_edc_deinit() {
     running_jobs.clear();
     job_allocations.clear();
     available_res.clear();
-    
-    // Close log file
-    if (log_file.is_open()) {
-        log_file.close();
-    }
+
     
     return 0;
-}
-
-// Helper function to log to both console and file
-void log_message(const char* format, ...) {
-    char buffer[1024];
-    va_list args;
-    va_start(args, format);
-    vsnprintf(buffer, sizeof(buffer), format, args);
-    va_end(args);
-    
-    // Print to console
-    printf("%s", buffer);
-    
-    // Write to log file if open
-    if (log_file.is_open()) {
-        log_file << buffer;
-        log_file.flush();  // Ensure it's written immediately
-    }
 }
 
 // Helper function to ensure available_res has enough time slots
@@ -254,8 +224,6 @@ extern "C" uint8_t batsim_edc_take_decisions(
             // First, ensure all time slots exist
             if(time_index + job->walltime > available_res.size()){
                 ensure_time_slot_exists(time_index + job->walltime);
-                
-                
             }
             
             // Then check if all required resources are available at each time slot

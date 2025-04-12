@@ -6,17 +6,22 @@ import os
 import sys
 from pathlib import Path
 
-def analyze_scheduler_performance(algorithm_name):
+def analyze_scheduler_performance(algorithm_name, output_dir=None):
     """
     Analyze scheduler performance from jobs.csv and schedule.csv files.
     
     Args:
         algorithm_name: Name of the algorithm used for the simulation
+        output_dir: Directory where to save the results (optional)
     """
-    # Define input and output paths
+    # Define input paths
     input_jobs_csv = "./out/jobs.csv"
     input_schedule_csv = "./out/schedule.csv"
-    output_dir = f"./res/{algorithm_name}"
+    
+    # Set default output directory if not provided
+    if output_dir is None:
+        output_dir = f"res/{algorithm_name}"
+    
     output_prefix = f"{output_dir}/{algorithm_name}"
     
     # Check if input files exist
@@ -87,7 +92,6 @@ def analyze_scheduler_performance(algorithm_name):
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.savefig(f"{output_prefix}_waiting_time_distribution.png")
     
-    
     # 4. Waiting Time vs. Submission Time
     plt.figure(figsize=(10, 6))
     plt.scatter(jobs_df['submission_time'], jobs_df['waiting_time'], alpha=0.7, c='purple')
@@ -96,7 +100,6 @@ def analyze_scheduler_performance(algorithm_name):
     plt.ylabel('Waiting Time (seconds)')
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.savefig(f"{output_prefix}_waiting_vs_submission.png")
-    
     
     # Save summary to a text file
     with open(f"{output_prefix}_performance_summary.txt", 'w') as f:
@@ -120,16 +123,17 @@ def analyze_scheduler_performance(algorithm_name):
     print(f"\nAnalysis complete. Results saved to {output_dir}")
 
 def main():
-    # Check if a filename was provided as an argument
+    # Check if algorithm name is provided
     if len(sys.argv) < 2:
-        print("Usage: python analyze_scheduler_performance.py <algorithm_name>")
-        print("Example: python analyze_scheduler_performance.py basic_backfill")
+        print("Usage: python analyze_scheduler_performance.py <algorithm_name> [output_dir]")
+        print("Example: python analyze_scheduler_performance.py basic_backfill [res/basic_1000_5]")
         sys.exit(1)
     
-    # Get the algorithm name from command line arguments
+    # Get the algorithm name and optional output directory
     algorithm_name = sys.argv[1]
+    output_dir = sys.argv[2] if len(sys.argv) > 2 else None
     
-    analyze_scheduler_performance(algorithm_name)
+    analyze_scheduler_performance(algorithm_name, output_dir)
 
 if __name__ == "__main__":
     main() 

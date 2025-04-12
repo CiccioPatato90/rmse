@@ -31,8 +31,7 @@ static std::list<SchedJob*> *jobs = nullptr;
 static std::unordered_map<std::string, SchedJob*> running_jobs;
 static std::unordered_map<std::string, std::set<uint32_t>> job_allocations;
 static uint32_t platform_nb_hosts = 0;
-static std::set<uint32_t> available_res;  
-static std::ofstream log_file;  // Log file stream
+static std::set<uint32_t> available_res;
 
 // -------------------------
 // Initialization function
@@ -50,14 +49,6 @@ extern "C" uint8_t batsim_edc_init(const uint8_t *data, uint32_t size, uint32_t 
     mb = new MessageBuilder(!format_binary);
     jobs = new std::list<SchedJob*>();
     
-    // Open log file
-    log_file.open("easy_backfill_log.txt", std::ios::out | std::ios::trunc);
-    if (!log_file.is_open()) {
-        printf("Warning: Could not open log file for writing\n");
-    } else {
-        log_file << "EASY Backfilling Scheduler Log\n";
-        log_file << "=============================\n\n";
-    }
     
     return 0;
 }
@@ -85,30 +76,7 @@ extern "C" uint8_t batsim_edc_deinit() {
     job_allocations.clear();
     available_res.clear();
     
-    // Close log file
-    if (log_file.is_open()) {
-        log_file.close();
-    }
-    
     return 0;
-}
-
-// Helper function to log to both console and file
-void log_message(const char* format, ...) {
-    char buffer[1024];
-    va_list args;
-    va_start(args, format);
-    vsnprintf(buffer, sizeof(buffer), format, args);
-    va_end(args);
-    
-    // Print to console
-    printf("%s", buffer);
-    
-    // Write to log file if open
-    if (log_file.is_open()) {
-        log_file << buffer;
-        log_file.flush();  // Ensure it's written immediately
-    }
 }
 
 // -------------------------
@@ -127,7 +95,6 @@ extern "C" uint8_t batsim_edc_take_decisions(
     auto nb_events = parsed->events()->size();
     for (unsigned int i = 0; i < nb_events; ++i) {
         auto event = (*parsed->events())[i];
-        log_message("backfilling received event type='%s'\n", fb::EnumNamesEvent()[event->event_type()]);
         
         switch (event->event_type()) {
             case fb::Event_BatsimHelloEvent: {
@@ -182,39 +149,13 @@ extern "C" uint8_t batsim_edc_take_decisions(
     
     // -------------------------
     // Scheduling loop with backfilling
-    // -------------------------
-    log_message("\n===== SCHEDULING CYCLE START (time: %.2f) =====\n", parsed->now());
-    log_message("Available resources: %zu/%u (", available_res.size(), platform_nb_hosts);
-    for (auto res : available_res) {
-        log_message("%u ", res);
-    }
-    log_message(")\n");
-    
-    log_message("Queue state (%zu jobs):\n", jobs->size());
-    int queue_position = 0;
-    for (auto job : *jobs) {
-        log_message("  [%d] Job %s: %u hosts\n", queue_position++, job->job_id.c_str(), job->nb_hosts);
-    }
-    
-    log_message("Running jobs (%zu):\n", running_jobs.size());
-    for (auto& pair : running_jobs) {
-        log_message("  Job %s: %u hosts on resources (", pair.first.c_str(), pair.second->nb_hosts);
-        for (auto res : job_allocations[pair.first]) {
-            log_message("%u ", res);
-        }
-        log_message(")\n");
-    }
-    
+    // -------------------------    
     while (!jobs->empty()) {
         // Always try to schedule the job at the front of the queue first.
         SchedJob* job = jobs->front();
-        log_message("\nTrying to schedule first job in queue: %s (needs %u hosts)\n", 
-               job->job_id.c_str(), job->nb_hosts);
         
         if (available_res.size() >= job->nb_hosts) {
             // The front job fits: allocate the first nb_hosts resources available.
-            log_message("  SUCCESS: Job %s can be scheduled immediately with %u hosts\n", 
-                   job->job_id.c_str(), job->nb_hosts);
             
             std::set<uint32_t> job_resources;
             auto it = available_res.begin();
@@ -237,25 +178,14 @@ extern "C" uint8_t batsim_edc_take_decisions(
             }
             mb->add_execute_job(job->job_id, resources_str);
             jobs->pop_front();
-            
-            log_message("  Job %s scheduled on resources: %s\n", job->job_id.c_str(), resources_str.c_str());
-            log_message("  Remaining available resources: %zu\n", available_res.size());
         } else {
             // The front job does not fit: attempt to backfill one job from the rest of the queue.
-            log_message("  FAILED: Job %s cannot be scheduled immediately (needs %u hosts, only %zu available)\n", 
-                   job->job_id.c_str(), job->nb_hosts, available_res.size());
-            log_message("  Attempting to backfill a job from the rest of the queue...\n");
-            
             bool backfilled = false;
             // Start from the second job (if any).
             for (auto it = std::next(jobs->begin()); it != jobs->end(); ++it) {
                 SchedJob* backfill_job = *it;
-                log_message("  Checking if job %s (needs %u hosts) can be backfilled\n", 
-                       backfill_job->job_id.c_str(), backfill_job->nb_hosts);
                 
                 if (available_res.size() >= backfill_job->nb_hosts) {
-                    log_message("    SUCCESS: Job %s can be backfilled with %u hosts\n", 
-                           backfill_job->job_id.c_str(), backfill_job->nb_hosts);
                     
                     std::set<uint32_t> job_resources;
                     auto res_it = available_res.begin();
@@ -279,29 +209,18 @@ extern "C" uint8_t batsim_edc_take_decisions(
                     // Remove the backfilled job from the pending queue.
                     jobs->erase(it);
                     backfilled = true;
-                    
-                    log_message("    Job %s backfilled on resources: %s\n", 
-                           backfill_job->job_id.c_str(), resources_str.c_str());
-                    log_message("    Remaining available resources: %zu\n", available_res.size());
                     break; // Schedule at most one backfilled job in this decision cycle.
-                } else {
-                    log_message("    FAILED: Job %s cannot be backfilled (needs %u hosts, only %zu available)\n", 
-                           backfill_job->job_id.c_str(), backfill_job->nb_hosts, available_res.size());
                 }
             }
             // If no pending job (other than the front) can be scheduled, then break out.
             if (!backfilled) {
-                log_message("  No jobs could be backfilled, ending scheduling cycle\n");
                 break;
             } else {
-                log_message("  A job was backfilled, ending scheduling cycle\n");
                 // (Optionally, you could continue the loop to check for more opportunities.)
                 break;
             }
         }
     }
-    
-    log_message("===== SCHEDULING CYCLE END =====\n\n");
     
     mb->finish_message(parsed->now());
     serialize_message(*mb, !format_binary, const_cast<const uint8_t **>(decisions), decisions_size);

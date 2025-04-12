@@ -1,0 +1,22 @@
+=== SCHEDULER PERFORMANCE SUMMARY ===
+Total Jobs: 1000
+Makespan: 10896.00 seconds
+Mean Waiting Time: 4721.51 seconds
+Mean Turnaround Time: 4738.87 seconds
+Mean Slowdown: 353.26
+Max Slowdown: 2066.40
+
+Resource Utilization: 95.88%
+
+=== JOB CHARACTERISTICS ===
+Average Resources per Job: 3.01
+Average Execution Time: 17.36 seconds
+Average Waiting Time: 4721.51 seconds
+Average Stretch: 353.26
+
+Resource Request Distribution:
+  1 resources: 202 jobs (20.2%)
+  2 resources: 193 jobs (19.3%)
+  3 resources: 195 jobs (19.5%)
+  4 resources: 213 jobs (21.3%)
+  5 resources: 197 jobs (19.7%)

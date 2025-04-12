@@ -3,18 +3,18 @@ import matplotlib.pyplot as plt
 import sys
 import os
 
-# Check if a filename was provided as an argument
+# Get the algorithm name from command line arguments
 if len(sys.argv) < 2:
-    print("Usage: python gantt.py <algorithm_name>")
-    print("Example: python gantt.py basic_backfill")
+    print("Usage: python gantt.py <algorithm_name> [output_dir]")
+    print("Example: python gantt.py basic_backfill [res/basic_1000_5]")
     sys.exit(1)
 
-# Get the algorithm name from command line arguments
+# Get the algorithm name and optional output directory
 algorithm_name = sys.argv[1]
+output_dir = sys.argv[2] if len(sys.argv) > 2 else f"res/{algorithm_name}"
 
-# Define input and output paths
+# Define input path
 input_csv = "./out/jobs.csv"
-output_dir = f"./res/{algorithm_name}"
 output_file = f"{output_dir}/gantt.png"
 
 # Check if input file exists
