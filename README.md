@@ -3,6 +3,17 @@
 ## Overview
 This project implements various backfilling algorithms for job scheduling in BATSIM, inspired by Fernando Mendonça's PhD manuscript (Chapters 4 and 5). The project provides a framework for comparing different scheduling strategies and analyzing their performance.
 
+## Prerequisites
+This project uses Nix for dependency management and environment setup. Before using the project, you need to:
+
+1. Install Nix package manager (if not already installed)
+2. Enter the development environment:
+   ```bash
+   nix develop
+   ```
+
+This will set up all the necessary dependencies and tools required to build and run the project.
+
 ## Implemented Algorithms
 Located in the `/src` directory, the project implements the following scheduling algorithms:
 
@@ -38,7 +49,7 @@ The project includes two scripts for running simulations:
 
 #### Original Run Script
 ```bash
-./run <algorithm_name> [-b]
+./run.sh <algorithm_name> [-b]
 ```
 Parameters:
 - `algorithm_name`: Name of the algorithm to run
@@ -46,7 +57,7 @@ Parameters:
 
 #### Enhanced Run Script (V2)
 ```bash
-./runV2 [-b] [-j <num_jobs>] [-m <num_machines>] [--all] <algorithm_name>
+./runV2.sh [-b] [-j <num_jobs>] [-m <num_machines>] [--all] <algorithm_name>
 ```
 Parameters:
 - `-b`: Optional flag to build the algorithm source before execution
