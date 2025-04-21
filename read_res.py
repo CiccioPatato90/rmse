@@ -3,14 +3,6 @@ import pandas as pd
 # Load the CSV file
 df = pd.read_csv("./out/jobs.csv")
 
-# Compute aggregate statistics
-# waiting_time_stats = {
-#     "Minimum": df["recomputed_waiting_time"].min(),
-#     "Median": df["recomputed_waiting_time"].median(),
-#     "Mean": df["recomputed_waiting_time"].mean(),
-#     "Maximum": df["recomputed_waiting_time"].max(),
-# }
-
 recomp_waiting = {
     "Original": df["waiting_time"].values,
     "Recomp": df["finish_time"].values - df["starting_time"].values,

@@ -26,16 +26,8 @@ def extract_backfill_stats(log_file):
     
     # Find the last line with backfill statistics
     for line in reversed(lines):
-        if "Backfilling statistics:" in line:
-            # Extract numbers using regex
-            match = re.search(r"Backfilling statistics: (\d+) total successes \((\d+) contiguous, (\d+) non-contiguous\)", line)
-            if match:
-                total = int(match.group(1))
-                contiguous = int(match.group(2))
-                non_contiguous = int(match.group(3))
-                return total, contiguous, non_contiguous
-    
-    return None
+        line = line.strip().split(' ')
+        return int(line[0]), int(line[1]), int(line[2])
 
 def analyze_scheduler_performance(algorithm_name, output_dir=None):
     """

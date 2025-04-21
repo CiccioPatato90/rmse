@@ -3,7 +3,7 @@
 # Default values
 BUILD=false
 PARAM=""
-NUM_JOBS=1000  # Default number of jobs
+NUM_JOBS=10  # Default number of jobs
 NUM_MACHINES=5  # Default number of machines
 RUN_ALL=false
 

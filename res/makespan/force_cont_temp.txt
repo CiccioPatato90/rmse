@@ -1,0 +1,11 @@
+# Makespan values for force_cont algorithm
+# Number of jobs: 10, Number of machines: 2
+# Format: simulation_number, makespan
+1 119.0
+2 119.0
+3 119.0
+4 119.0
+5 119.0
+6 119.0
+7 119.0
+8 119.0

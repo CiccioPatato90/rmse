@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+""" 
+Script to analyze the results of the makespan experiments.
+The results are stored in the res/res_makespan directory, for each simulated algorithm.
+The result helps us build the visualizations used in the paper to describe makespan distribution.
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd

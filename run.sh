@@ -40,8 +40,8 @@ fi
 
 # Run batsim with the provided parameter
 echo "Running batsim with parameter: $PARAM"
-#batsim -l "./build/lib${PARAM}.so" 0 '' -p assets/4machine.xml -w assets/best_contigous.json
-batsim -l "./build/lib${PARAM}.so" 0 '' -p assets/test/machines_5.xml -w assets/generated/gen.json
+# batsim -l "./build/lib${PARAM}.so" 0 '' -p assets/test/machines_5.xml -w assets/best_contigous.json
+batsim -l "./build/lib${PARAM}.so" 0 '' -p assets/generated/machines/machines_5.xml -w "assets/generated/gen.json"
 if [ $? -ne 0 ]; then
   echo "Batsim failed, exiting"
   exit 1

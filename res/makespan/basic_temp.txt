@@ -1,0 +1,5 @@
+# Makespan values for basic algorithm
+# Number of jobs: 3, Number of machines: 2
+# Format: simulation_number, makespan
+1 FAILED
+2 FAILED

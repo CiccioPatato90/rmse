@@ -60,6 +60,7 @@ extern "C" uint8_t batsim_edc_init(const uint8_t *data, uint32_t size, uint32_t 
         printf("Warning: Could not open log file for writing\n");
     } else {
         log_file << "EASY Backfilling Scheduler Log\n";
+        log_file << "FORMAT: <total_backfills> <contiguous_backfills> <non_contiguous_backfills>\n";
         log_file << "=============================\n\n";
     }
     
@@ -433,7 +434,7 @@ extern "C" uint8_t batsim_edc_take_decisions(
         }
     }
     
-    log_message("Backfilling statistics: %u total successes (%u contiguous, %u non-contiguous)\n", 
+    log_message("%u %u %u\n", 
            backfill_success_count, contiguous_backfill_count, non_contiguous_backfill_count);
     
     mb->finish_message(parsed->now());

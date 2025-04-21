@@ -1,0 +1,3 @@
+# Backfill values for basic algorithm
+# Number of jobs: 3, Number of machines: 2
+# Format: simulation_number, total_backfills, contiguous_backfills, non_contiguous_backfills
