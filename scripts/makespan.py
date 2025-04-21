@@ -34,9 +34,10 @@ def run_simulation(algorithm, num_machines):
     """Run a single simulation with the specified algorithm and parameters."""
 
     job_file = f"assets/generated/gen.json"
+    # job_file = f"assets/test/jobs_10.json"
     algo_path = f"./build/lib{algorithm}.so"
-    # machines_file = f"assets/generated/machines/machines_{num_machines}.xml"
-    machines_file = f"assets/test/machines_5.xml"
+    machines_file = f"assets/generated/machines/machines_{num_machines}.xml"
+    # machines_file = f"assets/test/machines_5.xml"
     
     # Prepare the command as a list of arguments
     cmd = ["batsim", "-l", algo_path, "0", "", "-p", machines_file, "-w", job_file]
@@ -47,11 +48,11 @@ def run_simulation(algorithm, num_machines):
         # Run the command and capture output using subprocess.run
         # This ensures proper synchronization and error handling
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print(f"Command output: {result.stdout}")
+        # print(f"Command output: {result.stdout}")
     except subprocess.CalledProcessError as e:
         print(f"Command failed with exit code {e.returncode}")
         print(f"Error output: {e.stderr}")
-        return None
+        #return None
     except Exception as e:
         print(f"Exception occurred: {e}")
         return None
@@ -66,7 +67,6 @@ def run_simulation(algorithm, num_machines):
         with open(schedule_file, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                print("row at makespan: ", row['makespan'])
                 return float(row['makespan'])
     except Exception as e:
         print(f"Error reading schedule file: {e}")
@@ -76,10 +76,10 @@ def run_simulation(algorithm, num_machines):
 
 def main():
     parser = argparse.ArgumentParser(description='Run multiple simulations with different algorithms')
-    parser.add_argument('--num-sims', type=int, default=256, help='Number of simulations to run (default: 2)')
-    parser.add_argument('--num-jobs', type=int, default=128, help='Number of jobs per simulation (default: 40)')
-    parser.add_argument('--num-machines', type=int, default=5, help='Number of machines (default: 5)')
-    parser.add_argument('--algorithms', nargs='+', default=['basic', 'best_cont', 'force_cont'], 
+    parser.add_argument('--num-sims', type=int, default=512, help='Number of simulations to run (default: 2)')
+    parser.add_argument('--num-jobs', type=int, default=256, help='Number of jobs per simulation (default: 40)')
+    parser.add_argument('--num-machines', type=int, default=8, help='Number of machines (default: 5)')
+    parser.add_argument('--algorithms', nargs='+', default=['easy_backfill', 'basic', 'best_cont', 'force_cont'], 
                         help='Algorithms to run (default: basic best_cont force_cont)')
     # parser.add_argument('--algorithms', nargs='+', default=['basic'], help='Algorithms to run (default: basic best_cont force_cont)')
     
@@ -93,15 +93,15 @@ def main():
         generate_machines(args.num_machines, "assets/generated/machines") 
         for algorithm in args.algorithms:
             output_file_makespan = f"res/makespan/{algorithm}_temp.txt"
-            # output_file_backfill = f"res/backfill/{algorithm}_temp.txt"
+            output_file_backfill = f"res/backfill/{algorithm}_temp.txt"
 
             print(f"Running {algorithm}...")
 
             makespan = run_simulation(algorithm, args.num_machines)
-            # backfill = extract_backfill_stats(f"{algorithm}_log.txt")
+            backfill = extract_backfill_stats(f"{algorithm}_log.txt")
 
             print(f"Makespan: {makespan}")
-            # print(f"Backfill: {backfill}")
+            print(f"Backfill: {backfill}")
 
             if makespan is not None:
                 # Append the makespan to the output file
@@ -113,15 +113,15 @@ def main():
                 with open(output_file_makespan, 'a') as f:
                     f.write(f"{i+1} FAILED\n")
 
-            # if backfill is not None:
-            #     # Append the makespan to the output file
-            #     with open(output_file_backfill, 'a') as f:
-            #         f.write(f"{i+1} {backfill}\n")
-            # else:
-            #     print(f"  Error: Could not extract backfill")
-            #     # Add a placeholder for failed simulations
-            #     with open(output_file_backfill, 'a') as f:
-            #         f.write(f"{i+1} FAILED\n")
+            if backfill is not None:
+                # Append the makespan to the output file
+                with open(output_file_backfill, 'a') as f:
+                    f.write(f"{i+1} {backfill}\n")
+            else:
+                print(f"  Error: Could not extract backfill")
+                # Add a placeholder for failed simulations
+                with open(output_file_backfill, 'a') as f:
+                    f.write(f"{i+1} FAILED\n")
 
     print("\nAll simulations completed!")
     

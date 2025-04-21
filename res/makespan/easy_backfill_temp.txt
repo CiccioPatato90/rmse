@@ -1,4 +1,4 @@
-# Makespan values for best_cont algorithm
+# Makespan values for easy_backfill algorithm
 # Number of jobs: 256, Number of machines: 8
 # Format: simulation_number, makespan
 1 1142.0

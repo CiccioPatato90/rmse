@@ -105,6 +105,37 @@ Each output directory contains:
    - Visual representation of the schedule
    - Generated using Evalys
 
+## Analysis Scripts
+
+### Performance Analysis
+The scheduler performance analysis script (`scripts/analyze_scheduler_performance.py`) generates comprehensive metrics for each algorithm:
+
+### Makespan Analysis
+The makespan analysis script (`scripts/plot_makespan.py`) compares the makespan performance of different algorithms:
+
+```bash
+python3 scripts/plot_makespan.py
+```
+
+This script:
+- Reads makespan data from `res/makespan/` directory
+- Creates comparison plots between algorithms
+- Saves plots to `res/plots/` directory
+- Outputs performance difference statistics
+
+### Backfill Analysis
+The backfill analysis script (`scripts/backfill.py`) analyzes the backfill behavior of different algorithms:
+
+```bash
+python3 scripts/backfill.py
+```
+
+This script:
+- Reads backfill data from `res/backfill/` directory
+- Creates probability density function plots for contiguous backfills
+- Saves plots to `res/plots/` directory
+- Provides visual comparison of backfill strategies
+
 ## Performance Metrics
 
 The scheduler performance analysis script (`scripts/analyze_scheduler_performance.py`) generates comprehensive metrics for each algorithm:

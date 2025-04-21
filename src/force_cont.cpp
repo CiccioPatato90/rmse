@@ -110,10 +110,6 @@ void log_message(const char* format, ...) {
  
     va_end(args);
 
-    // Print to console
-
-    printf("%s", buffer);
-
     // Write to log file if open
 
     if (log_file.is_open()) {
@@ -257,15 +253,12 @@ extern "C" uint8_t batsim_edc_take_decisions(
                     break;
                 }
             }
-            
             // Check if we found enough contiguous resources
             if (job_resources.size() < job->nb_hosts) {
-                // If we don't have enough contiguous resources, wait
+                // If we don't have enough contiguous resources, go to next job
                 break;
             }
-            
             std::set<uint32_t> trimmed_resources(job_resources.begin(), job_resources.end());
-            
             // Validate that we have resources to allocate
             if (trimmed_resources.empty()) {
                 break;

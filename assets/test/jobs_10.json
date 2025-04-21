@@ -1,16 +1,16 @@
 {
   "description": "10 jobs with varied resource requirements and execution times",
-  "nb_res": 20,
+  "nb_res": 5,
   "jobs": [
-    {"id": "job1", "profile": "delay1", "res": 5, "walltime": 25, "subtime": 0},
-    {"id": "job2", "profile": "delay2", "res": 3, "walltime": 15, "subtime": 0},
-    {"id": "job3", "profile": "delay3", "res": 2, "walltime": 10, "subtime": 0},
-    {"id": "job4", "profile": "delay4", "res": 4, "walltime": 20, "subtime": 0},
-    {"id": "job5", "profile": "delay5", "res": 1, "walltime": 5, "subtime": 0},
-    {"id": "job6", "profile": "delay6", "res": 6, "walltime": 30, "subtime": 0},
-    {"id": "job7", "profile": "delay7", "res": 2, "walltime": 8, "subtime": 0},
-    {"id": "job8", "profile": "delay8", "res": 3, "walltime": 12, "subtime": 0},
-    {"id": "job9", "profile": "delay9", "res": 1, "walltime": 6, "subtime": 0},
+    {"id": "job1", "profile": "delay1", "res": 5, "walltime": 25, "subtime": 22},
+    {"id": "job2", "profile": "delay2", "res": 3, "walltime": 15, "subtime": 3},
+    {"id": "job3", "profile": "delay3", "res": 2, "walltime": 10, "subtime": 3},
+    {"id": "job4", "profile": "delay4", "res": 4, "walltime": 20, "subtime": 15},
+    {"id": "job5", "profile": "delay5", "res": 1, "walltime": 5, "subtime": 8},
+    {"id": "job6", "profile": "delay6", "res": 5, "walltime": 30, "subtime": 12},
+    {"id": "job7", "profile": "delay7", "res": 2, "walltime": 8, "subtime": 5},
+    {"id": "job8", "profile": "delay8", "res": 3, "walltime": 12, "subtime": 7},
+    {"id": "job9", "profile": "delay9", "res": 1, "walltime": 6, "subtime": 10},
     {"id": "job10", "profile": "delay10", "res": 4, "walltime": 18, "subtime": 0}
   ],
   "profiles": {

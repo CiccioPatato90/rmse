@@ -88,44 +88,23 @@ extern "C" uint8_t batsim_edc_deinit() {
     running_jobs.clear();
     job_allocations.clear();
     available_res.clear();
-
     // Close log file
- 
-
     if (log_file.is_open()) {
- 
-
         log_file.close();
- 
-
     }
-    
-    
+
     return 0;
 }
 
 void log_message(const char* format, ...) {
-
     char buffer[1024];
-
     va_list args;
- 
     va_start(args, format);
- 
     vsnprintf(buffer, sizeof(buffer), format, args);
- 
     va_end(args);
-
-    // Print to console
-
-    printf("%s", buffer);
-
     // Write to log file if open
-
     if (log_file.is_open()) {
-
         log_file << buffer;
-
         log_file.flush();  // Ensure it's written immediately
     }
 }
@@ -303,7 +282,7 @@ extern "C" uint8_t batsim_edc_take_decisions(
                     
                     std::set<uint32_t> assigned_resources = available_res[time_index];
                     
-                    // Sort the assigned resources in ascending order (BASIC)
+                    // Sort the assigned resources in ascending order (BASIC STEP)
                     std::vector<uint32_t> sorted_resources(assigned_resources.begin(), assigned_resources.end());
                     std::sort(sorted_resources.begin(), sorted_resources.end());
                     assigned_resources = std::set<uint32_t>(sorted_resources.begin(), sorted_resources.end());
@@ -314,7 +293,6 @@ extern "C" uint8_t batsim_edc_take_decisions(
                     if(time_index + backfill_job->walltime > available_res.size()){
                         ensure_time_slot_exists(time_index + backfill_job->walltime);
                     }
-                    
                     
                     //now add an iterator from time_index to the end of the available_res vector
                     for (auto it = time_index; it < time_index + backfill_job->walltime; ++it) {
@@ -327,7 +305,7 @@ extern "C" uint8_t batsim_edc_take_decisions(
                         
                         assigned_resources = intersection;
                         // update the time variable with the duration of the timeslice j
-                        time = time + (it - time_index); //?????
+                        time = time + (it - time_index); 
                         // if we arrived at the end of the needed walltime, we can break the loop
                         if (time >= backfill_job->walltime) {
                             backfilled = true;

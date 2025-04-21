@@ -1,0 +1,25 @@
+=== SCHEDULER PERFORMANCE SUMMARY ===
+Total Jobs: 8
+Makespan: 46.00 seconds
+Mean Waiting Time: 16.62 seconds
+Mean Turnaround Time: 25.75 seconds
+Mean Slowdown: 5.25
+Max Slowdown: 14.33
+
+Backfill Statistics:
+Total Backfills: 0
+Contiguous Backfills: 0
+Basic Backfills: 0
+
+Resource Utilization: 67.39%
+
+=== JOB CHARACTERISTICS ===
+Average Resources per Job: 1.62
+Average Execution Time: 9.12 seconds
+Average Waiting Time: 16.62 seconds
+Average Stretch: 5.25
+
+Resource Request Distribution:
+  1 resources: 4 jobs (50.0%)
+  2 resources: 3 jobs (37.5%)
+  3 resources: 1 jobs (12.5%)

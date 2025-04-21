@@ -10,11 +10,18 @@ def generate_jobs(num_jobs, max_hosts, filename):
     # Generate specified number of jobs
     for i in range(1, num_jobs + 1):
         # Random resource requirement between 1 and max_hosts
-        res = random.randint(1, max_hosts)
-        # Random walltime between 5 and 30
+        # Bias towards smaller resource requirements
+        res = random.randint(1, min(3, max_hosts))
+        
+        # Use smaller walltime values (1-10 instead of 5-30)
         walltime = random.randint(5, 30)
-        # Random submission time between 0 and 100
-        subtime = random.randint(0, 100)
+        
+        # For the first job, always set subtime to 0
+        # For other jobs, random submission time between 0 and 50 (reduced from 100)
+        if i == 1:
+            subtime = 0
+        else:
+            subtime = random.randint(0, 10)
         
         job = {
             "id": f"job{i}",
@@ -51,8 +58,8 @@ def generate_jobs(num_jobs, max_hosts, filename):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("Usage: python generate_jobs_1000.py <num_jobs> <max_hosts> <filename>")
-        print("Example: python generate_jobs_1000.py 1000 6 jobs_1000.json")
+        print("Usage: python generate_jobs.py <num_jobs> <max_hosts> <filename>")
+        print("Example: python generate_jobs.py 1000 6 jobs_1000.json")
         sys.exit(1)
     
     num_jobs = int(sys.argv[1])

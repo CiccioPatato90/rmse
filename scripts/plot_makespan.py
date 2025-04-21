@@ -9,6 +9,12 @@ The result helps us build the visualizations used in the paper to describe makes
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import re
+from scipy.stats import gaussian_kde
+import os
+
+# Create output directory if it doesn't exist
+os.makedirs("res/plots", exist_ok=True)
 
 def read_makespan_data(filename):
     """Read makespan values from the result file."""
@@ -26,6 +32,7 @@ def read_makespan_data(filename):
             except (ValueError, IndexError):
                 continue
     return np.array(data)
+
 
 def create_comparison_plot(data1, data2, label1, label2, title):
     """Create a scatter plot comparing two algorithms."""
@@ -55,7 +62,7 @@ def create_comparison_plot(data1, data2, label1, label2, title):
     # Color points based on their relative performance
     better_mask = data2_filtered < data1_filtered
     worse_mask = data2_filtered > data1_filtered
-    equal_mask = np.isclose(data2_filtered, data1_filtered, rtol=0.01)  # 1% tolerance
+    equal_mask = np.isclose(data2_filtered, data1_filtered, rtol=0.0001)  # 1% tolerance
     
     # Plot points with different colors based on performance
     plt.scatter(data1_filtered[better_mask], data2_filtered[better_mask], 
@@ -70,14 +77,10 @@ def create_comparison_plot(data1, data2, label1, label2, title):
     plt.ylabel(f'Makespan for {label2} (seconds)')
     plt.title(title)
     
-    # Calculate stability metric (standard deviation of differences)
-    stability = np.std(differences)
-    
     # Add text box with statistics
     stats_text = (
         f'Performance difference: {abs(avg_diff):.1f}%\n'
         f'({"higher" if avg_diff > 0 else "lower"} than {label1})\n'
-        f'Stability (σ of differences): {stability:.1f}%\n'
         f'Better: {sum(better_mask)} cases\n'
         f'Worse: {sum(worse_mask)} cases\n'
         f'Equal: {sum(equal_mask)} cases'
@@ -96,55 +99,40 @@ def create_comparison_plot(data1, data2, label1, label2, title):
     # Add legend
     plt.legend(loc='lower right')
     
-    return plt, avg_diff, stability
+    return plt, avg_diff
 
 def main():
     # Read data from files
-    basic_data = read_makespan_data('res/res_makespan/basic_temp.txt')
-    best_cont_data = read_makespan_data('res/res_makespan/best_cont_temp.txt')
-    force_cont_data = read_makespan_data('res/res_makespan/force_cont_temp.txt')
+    basic_data = read_makespan_data('res/makespan/basic_temp.txt')
+    best_cont_data = read_makespan_data('res/makespan/best_cont_temp.txt')
+    force_cont_data = read_makespan_data('res/makespan/force_cont_temp.txt')
     
     print("\nAnalysis Results:")
     print("-----------------")
     
     # 1. Basic vs Best-effort contiguous
-    plt1, diff1, stab1 = create_comparison_plot(
+    plt1, diff1 = create_comparison_plot(
         basic_data, best_cont_data,
         'basic backfilling',
         'best effort contiguous',
         'Makespan distribution for basic backfilling and best effort contiguous'
     )
-    plt1.savefig('basic_vs_best_cont.png', dpi=300, bbox_inches='tight')
+    plt1.savefig('res/plots/basic_vs_best_cont.png', dpi=300, bbox_inches='tight')
     plt1.close()
     
     print("\nBasic vs Best-effort Contiguous:")
     print(f"Average performance difference: {abs(diff1):.1f}%")
-    print(f"Stability (σ of differences): {stab1:.1f}%")
     
     # 2. Basic vs Forced contiguous
-    plt2, diff2, stab2 = create_comparison_plot(
+    plt2, diff2= create_comparison_plot(
         basic_data, force_cont_data,
         'basic backfilling',
         'forced contiguous',
         'Makespan distribution for basic backfilling and forced contiguous'
     )
-    plt2.savefig('basic_vs_force_cont.png', dpi=300, bbox_inches='tight')
+    plt2.savefig('res/plots/basic_vs_force_cont.png', dpi=300, bbox_inches='tight')
     plt2.close()
     
-    print("\nBasic vs Forced Contiguous:")
-    print(f"Average performance difference: {abs(diff2):.1f}%")
-    print(f"Stability (σ of differences): {stab2:.1f}%")
-    
-    
-    print("\nBest-effort Contiguous vs Forced Contiguous:")
-    print(f"Average performance difference: {abs(diff3):.1f}%")
-    print(f"Stability (σ of differences): {stab3:.1f}%")
-    
-    # Compare stability between all pairs
-    print("\nStability Comparisons:")
-    print("1. Basic vs Best-effort stability: {:.1f}%".format(stab1))
-    print("2. Basic vs Forced stability: {:.1f}%".format(stab2))
-    print("3. Best-effort vs Forced stability: {:.1f}%".format(stab3))
 
 if __name__ == "__main__":
     main() 

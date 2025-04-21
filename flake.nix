@@ -61,6 +61,10 @@
 
               python3
               kapack.evalys
+              python3Packages.numpy
+              python3Packages.matplotlib
+              python3Packages.pandas
+              python3Packages.scipy
 
               # libraries deps
               batprotopkgs.batprotocol-cpp

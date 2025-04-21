@@ -1,6 +1,0 @@
-EASY Backfilling Scheduler Log
-FORMAT: <total_backfills> <contiguous_backfills> <non_contiguous_backfills>
-=============================
-
-0 0 0
-0 0 0
