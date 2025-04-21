@@ -2,6 +2,7 @@
 
 ## Overview
 This project implements various backfilling algorithms for job scheduling in BATSIM, inspired by Fernando Mendonça's PhD manuscript (Chapters 4 and 5). The project provides a framework for comparing different scheduling strategies and analyzing their performance.
+Presentation at the following link: https://docs.google.com/presentation/d/12BT8_Spy_DXZ9oVdCqttdvId8RQ9wwiNMT6_O4LsdMU/edit?usp=sharing
 
 ## Prerequisites
 This project uses Nix for dependency management and environment setup. Before using the project, you need to:
