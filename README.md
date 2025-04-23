@@ -16,8 +16,8 @@ This project uses Nix for dependency management and environment setup. Before us
 This will set up all the necessary dependencies and tools required to build and run the project.
 
 ## Implemented Algorithms
-Located in the `/src` directory, the project implements the following scheduling algorithms:
-
+Located in the `/src` directory, the project implements the following scheduling algorithms.
+The first 3 are related to the assignment, while the 4 and 5 were developed in class and would compare nicely to the more advanced approaches:
 1. **Basic Backfilling (Conservative Backfilling)**
    - Standard implementation of conservative backfilling strategy
    - Prioritizes jobs in FIFO order
@@ -56,6 +56,9 @@ Parameters:
 - `algorithm_name`: Name of the algorithm to run
 - `-b`: Optional flag to build the algorithm source before execution
 
+Output:
+- Will run the selected algorithm and return a basic gantt visualization through the evalys package and a .txt file containing some basic stats obtained by the batsim output .csv files
+
 #### Enhanced Run Script (V2)
 ```bash
 ./runV2.sh [-b] [-j <num_jobs>] [-m <num_machines>] [--all] <algorithm_name>
@@ -80,7 +83,8 @@ Examples:
 ```
 
 ### Output
-Results are stored in the following directory structure:
+Outputs a more structured visuslization through python scripting and extracing data during the execution of multiple algorithms at once. The Job generation works as expected, the machine generation was not thoroughly tested so it might be a bit instable in this instance.
+Results are stored in the following directory structure.
 
 #### Original Run Script
 Results are stored in `res/<algorithm_name>/` directory
@@ -108,6 +112,12 @@ Each output directory contains:
 
 ## Analysis Scripts
 
+### Backfill
+The backfill.py script is the entrypoint for the visualization shown in the paper comparing the makespan devation between two algorithms. It is configurable in terms of number machines, number of jobs, number of repetitions. It will output files that aggregate the makespans and backfill counts (total backfills, contigous backfills and non-contigous backfills) for each run over the chosen algorithms.
+Then, by using plot_makespan.py and plot_backfill.py, we can take the results and build the visualization used to replicate and prove the results obtained in the paper.
+
+It follows a short explanation on how to use the analysis scripts independently of the workflow that I had in mind.
+
 ### Performance Analysis
 The scheduler performance analysis script (`scripts/analyze_scheduler_performance.py`) generates comprehensive metrics for each algorithm:
 
@@ -125,10 +135,10 @@ This script:
 - Outputs performance difference statistics
 
 ### Backfill Analysis
-The backfill analysis script (`scripts/backfill.py`) analyzes the backfill behavior of different algorithms:
+The backfill analysis script (`scripts/plot_backfill.py`) analyzes the backfill behavior of different algorithms:
 
 ```bash
-python3 scripts/backfill.py
+python3 scripts/plot_backfill.py
 ```
 
 This script:
@@ -141,10 +151,6 @@ This script:
 
 The scheduler performance analysis script (`scripts/analyze_scheduler_performance.py`) generates comprehensive metrics for each algorithm:
 
-### Backfill Statistics
-- **Total Backfills**: The total number of backfills performed by the scheduler
-- **Contiguous Backfills**: The number of backfills where the allocated resources are contiguous
-- **Basic Backfills**: The number of backfills where the allocated resources are non-contiguous
 
 ### Resource Utilization
 - **Average Resource Utilization**: Percentage of resources used over time
